@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;netstandard1.1;net46;net45</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1;netstandard2.0;net472</TargetFrameworks>
     <Version>1.2.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/EncompassRest/EncompassRest</PackageProjectUrl>
@@ -26,6 +26,8 @@
     <PackageReference Include="Enums.NET" Version="3.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <EmbeddedResource Include="LoanFields.zip" />
   </ItemGroup>
 
