@@ -97,6 +97,10 @@ namespace EncompassRest
         /// </summary>
         CommonCache CommonCache { get; }
 
+        HttpClient HttpClient { get; }
+
+        internal ResourceLocks.ResourceLocks ResourceLocks { get; }
+
         /// <summary>
         /// Set by ClientParameters.BaseAddress. The URL to call for API calls. Defaults to "https://api.elliemae.com/".
         /// </summary>
@@ -410,6 +414,8 @@ namespace EncompassRest
             }
         }
 
+        ResourceLocks.ResourceLocks IEncompassRestClient.ResourceLocks => ResourceLocks;
+
         /// <summary>
         /// The Loan Folders Apis.
         /// </summary>
@@ -499,7 +505,7 @@ namespace EncompassRest
         /// </summary>
         public CommonCache CommonCache { get; }
 
-        internal HttpClient HttpClient
+        public HttpClient HttpClient
         {
             get
             {
@@ -577,11 +583,11 @@ namespace EncompassRest
 
         internal sealed class RetryHandler : DelegatingHandler
         {
-            private readonly EncompassRestClient _client;
+            private readonly IEncompassRestClient _client;
             private readonly bool _retryOnUnauthorized;
             private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
 
-            public RetryHandler(EncompassRestClient client, bool retryOnUnauthorized)
+            public RetryHandler(IEncompassRestClient client, bool retryOnUnauthorized)
                 : base(new HttpClientHandler())
             {
                 _client = client;
