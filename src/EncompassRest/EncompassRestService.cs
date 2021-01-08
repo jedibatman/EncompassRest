@@ -326,10 +326,8 @@ namespace EncompassRest
                 var httpClient = _httpClient;
                 if (httpClient == null)
                 {
-                    httpClient = new HttpClient()
-                    {
-                        Timeout = Timeout
-                    };
+                    httpClient = _httpClientFactory.CreateClient();
+                    //TODO timeout in client
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AccessToken.Type, AccessToken.Token);
                     httpClient = Interlocked.CompareExchange(ref _httpClient, httpClient, null) ?? httpClient;
                 }
