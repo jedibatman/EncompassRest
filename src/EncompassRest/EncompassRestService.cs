@@ -26,6 +26,9 @@ namespace EncompassRest
 {
     public class EncompassRestService : IEncompassRestClient
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IClientParameters _clientParameters;
+
         private readonly Func<TokenCreator, Task<string>>? _tokenInitializer;
         private int _timeoutRetryCount;
 
@@ -44,6 +47,22 @@ namespace EncompassRest
         private Organizations.Organizations? _organizations;
         private Calculators.Calculators? _calculators;
         private BaseApiClient? _baseApiClient;
+
+        public EncompassRestService(IHttpClientFactory httpClientFactory, IClientParameters parameters)
+        {
+            _httpClientFactory = httpClientFactory;
+            _clientParameters = parameters;
+
+            Timeout = parameters.Timeout > TimeSpan.Zero ? parameters.Timeout : TimeSpan.FromSeconds(100);
+            _timeoutRetryCount = parameters.TimeoutRetryCount;
+            AccessToken = new AccessToken(parameters.ApiClientId, parameters.ApiClientSecret, this);
+            //_tokenInitializer = tokenInitializer;
+            ApiResponse = parameters.ApiResponse;
+            CommonCache = parameters.CommonCache ?? (parameters.CommonCache = new CommonCache());
+            UndefinedCustomFieldHandling = parameters.UndefinedCustomFieldHandling;
+            BaseAddress = (parameters.BaseAddress?.Length ?? 0) == 0 ? "https://api.elliemae.com/" : parameters.BaseAddress!;
+
+        }
 
         #region Properties
         /// <summary>
@@ -307,7 +326,7 @@ namespace EncompassRest
                 var httpClient = _httpClient;
                 if (httpClient == null)
                 {
-                    httpClient = new HttpClient(new RetryHandler(this, _tokenInitializer != null))
+                    httpClient = new HttpClient()
                     {
                         Timeout = Timeout
                     };

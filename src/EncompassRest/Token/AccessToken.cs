@@ -19,7 +19,7 @@ namespace EncompassRest.Token
         /// <summary>
         /// The access token.
         /// </summary>
-        string Token { get; }
+        string Token { get; set; }
         /// <summary>
         /// The access token type.
         /// </summary>
@@ -44,6 +44,13 @@ namespace EncompassRest.Token
         /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
         /// <returns></returns>
         Task<bool> RevokeAsync(CancellationToken cancellationToken = default);
+
+        Task<string> GetTokenFromUserCredentialsAsync(string instanceId, string userId, string password, string methodName, CancellationToken cancellationToken);
+
+        Task<string> GetTokenFromAuthorizationCodeAsync(string redirectUri, string authorizationCode, string methodName, CancellationToken cancellationToken);
+
+        Task<string> GetTokenFromClientCredentialsAsync(string instanceId, string methodName, CancellationToken cancellationToken);
+
     }
 
     /// <summary>
@@ -58,7 +65,7 @@ namespace EncompassRest.Token
         /// <summary>
         /// The access token.
         /// </summary>
-        public string Token { get; internal set; }
+        public string Token { get; set; }
 
         /// <summary>
         /// The access token type.
@@ -72,7 +79,7 @@ namespace EncompassRest.Token
                 var tokenClient = _tokenClient;
                 if (tokenClient == null)
                 {
-                    tokenClient = new HttpClient(new EncompassRestClient.RetryHandler(Client, false))
+                    tokenClient = new HttpClient(new EncompassRestClient.RetryHandler((EncompassRestClient)Client, false))
                     {
                         Timeout = Client.Timeout
                     };
@@ -83,7 +90,7 @@ namespace EncompassRest.Token
             }
         }
 
-        internal AccessToken(string apiClientId, string apiClientSecret, EncompassRestClient client)
+        internal AccessToken(string apiClientId, string apiClientSecret, IEncompassRestClient client)
             : base(client, "oauth2/v1/token")
         {
             _apiClientId = apiClientId;
@@ -121,21 +128,21 @@ namespace EncompassRest.Token
 
         internal void Dispose() => _tokenClient?.Dispose();
 
-        internal Task<string> GetTokenFromUserCredentialsAsync(string instanceId, string userId, string password, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
+        public Task<string> GetTokenFromUserCredentialsAsync(string instanceId, string userId, string password, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
             {
                 KeyValuePair.Create("grant_type", "password"),
                 KeyValuePair.Create("username", $"{userId}@encompass:{instanceId}"),
                 KeyValuePair.Create("password", password)
             }, methodName, cancellationToken);
 
-        internal Task<string> GetTokenFromAuthorizationCodeAsync(string redirectUri, string authorizationCode, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
+        public Task<string> GetTokenFromAuthorizationCodeAsync(string redirectUri, string authorizationCode, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
             {
                 KeyValuePair.Create("grant_type", "authorization_code"),
                 KeyValuePair.Create("redirect_uri", redirectUri),
                 KeyValuePair.Create("code", authorizationCode)
             }, methodName, cancellationToken);
 
-        internal Task<string> GetTokenFromClientCredentialsAsync(string instanceId, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
+        public Task<string> GetTokenFromClientCredentialsAsync(string instanceId, string methodName, CancellationToken cancellationToken) => GetTokenAsync(new[]
             {
                 KeyValuePair.Create("grant_type", "client_credentials"),
                 KeyValuePair.Create("scope", "lp"),
