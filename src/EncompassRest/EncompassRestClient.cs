@@ -23,6 +23,9 @@ namespace EncompassRest
         /// <summary>
         /// The access token and related Apis.
         /// </summary>
+        HttpClient HttpClient { get; }
+
+        ResourceLocks.ResourceLocks ResourceLocks { get; }
         IAccessToken AccessToken { get; }
         /// <summary>
         /// A base Api client for use when Apis aren't supported directly.
@@ -124,6 +127,7 @@ namespace EncompassRest
         }
 #endif
 
+        #region Static Factories
         /// <summary>
         /// Creates a client object which will automatically invoke the tokenInitializer when making an Api call with an expired token.
         /// </summary>
@@ -224,6 +228,7 @@ namespace EncompassRest
             await parameters.TryInitializeAsync(client, client.CommonCache, cancellationToken).ConfigureAwait(false);
             return client;
         }
+        #endregion
 
         private readonly Func<TokenCreator, Task<string>>? _tokenInitializer;
         private int _timeoutRetryCount;
@@ -401,7 +406,7 @@ namespace EncompassRest
 
         IContacts IEncompassRestClient.Contacts => Contacts;
 
-        internal ResourceLocks.ResourceLocks ResourceLocks
+        public ResourceLocks.ResourceLocks ResourceLocks
         {
             get
             {
@@ -499,7 +504,7 @@ namespace EncompassRest
         /// </summary>
         public CommonCache CommonCache { get; }
 
-        internal HttpClient HttpClient
+        public HttpClient HttpClient
         {
             get
             {
@@ -575,13 +580,13 @@ namespace EncompassRest
             _httpClient?.Dispose();
         }
 
-        internal sealed class RetryHandler : DelegatingHandler
+        public sealed class RetryHandler : DelegatingHandler
         {
-            private readonly EncompassRestClient _client;
+            private readonly IEncompassRestClient _client;
             private readonly bool _retryOnUnauthorized;
             private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
 
-            public RetryHandler(EncompassRestClient client, bool retryOnUnauthorized)
+            public RetryHandler(IEncompassRestClient client, bool retryOnUnauthorized)
                 : base(new HttpClientHandler())
             {
                 _client = client;
@@ -603,7 +608,7 @@ namespace EncompassRest
                                 {
                                     if (string.Equals(request.Headers.Authorization.Parameter, _client.AccessToken.Token, StringComparison.Ordinal))
                                     {
-                                        _client.AccessToken.Token = await _client._tokenInitializer!(new TokenCreator(_client, cancellationToken)).ConfigureAwait(false);
+                                        //_client.AccessToken.Token = await _client._tokenInitializer!(new TokenCreator(_client, cancellationToken)).ConfigureAwait(false);
                                         _client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_client.AccessToken.Type, _client.AccessToken.Token);
                                     }
                                 }
@@ -620,7 +625,7 @@ namespace EncompassRest
                             while (response.StatusCode == HttpStatusCode.GatewayTimeout && retryCount < _client.TimeoutRetryCount)
                             {
                                 ++retryCount;
-                                _client.TimeoutRetry?.Invoke(_client, new TimeoutRetryEventArgs(request, response, retryCount));
+                                //_client.TimeoutRetry?.Invoke(_client, new TimeoutRetryEventArgs(request, response, retryCount));
                                 response = await SendRequestAsync(request, cancellationToken).ConfigureAwait(false);
                             }
                             break;
@@ -632,7 +637,7 @@ namespace EncompassRest
             private async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
                 var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                _client.ApiResponse?.Invoke(_client, new ApiResponseEventArgs(response));
+                //_client.ApiResponse?.Invoke(_client, new ApiResponseEventArgs(response));
                 return response;
             }
         }

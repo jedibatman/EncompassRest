@@ -116,7 +116,7 @@ namespace EncompassRest
         /// <summary>
         /// The <see cref="EncompassRestClient"/> associated with the cursor.
         /// </summary>
-        public EncompassRestClient Client { get; }
+        public IEncompassRestClient Client { get; }
 
         IEncompassRestClient IApiObject.Client => Client;
 
@@ -135,7 +135,7 @@ namespace EncompassRest
         /// </summary>
         public IEnumerable<string> Fields { get; }
 
-        internal Cursor(ApiObject apiObject, EncompassRestClient client, string? cursorId, int count, IEnumerable<string>? fields)
+        internal Cursor(ApiObject apiObject, IEncompassRestClient client, string? cursorId, int count, IEnumerable<string>? fields)
         {
             _apiObject = apiObject;
             Client = client;

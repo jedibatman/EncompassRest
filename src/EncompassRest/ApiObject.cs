@@ -47,11 +47,11 @@ namespace EncompassRest
         /// <summary>
         /// The <see cref="EncompassRestClient"/> associated with the Api object.
         /// </summary>
-        public EncompassRestClient Client { get; }
+        public IEncompassRestClient Client { get; }
 
         IEncompassRestClient IApiObject.Client => Client;
 
-        internal ApiObject(EncompassRestClient client, string? baseApiPath)
+        internal ApiObject(IEncompassRestClient client, string? baseApiPath)
         {
             Client = client;
             _baseApiPath = baseApiPath;
