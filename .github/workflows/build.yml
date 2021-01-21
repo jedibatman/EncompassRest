@@ -1,20 +1,26 @@
-name: EncompassREST CI Build
+name: EncompassREST Build
 on:
   push:
     branches: 
       - master
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup .Net Core
-        uses: actions/setup-dotnet@v1
+      - name: Checkout Code
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+        
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
+        
+      - name: Restore NuGet Packages
+        run: nuget restore ./src/EncompassRest.sln /p:Configuration-Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1.0.0
         with:
-          dotnet-version: 3.1.103
-      - name: Build with .Net
-        run: dotnet build --configuration Release
-        working-directory: ./src/EncompassRest
-      - name: .Net Tests
-        run: dotnet test
-        working-directory: ./src/EncompassRest.Tests
+          name: published_webapp
+          path: bin\Release\Publish
