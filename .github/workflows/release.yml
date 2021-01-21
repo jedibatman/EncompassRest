@@ -1,0 +1,23 @@
+name: EncompassREST CI Release
+
+on:
+  release:
+    types: [published]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .Net Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.103
+    - name: Create NuGet Package
+      run: dotnet pack -c Release /p:Version=${{ github.event.release.tag_name }}
+      working-directory: ./src/EncompassRest
+    - name: Archive NuGet Package
+      uses: actions/upload-artifact@v1
+      with:
+        name: EncompassRest
+        path: ./bin/Release/EncompassRest.${{ github.events.release.tag_name }}.nupkg
