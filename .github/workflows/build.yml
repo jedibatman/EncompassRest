@@ -1,0 +1,20 @@
+name: EncompassREST CI Build
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .Net Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.103
+      - name: Build with .Net
+        run: dotnet build --configuration Release
+        working-directory: ./src/EncompassRest
+      - name: .Net Tests
+        run: dotnet test
+        working-directory: ./src/EncompassRest.Tests
