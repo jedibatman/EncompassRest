@@ -7,20 +7,20 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Checkout Code
+    - name: Checkout Code
+      uses: actions/checkout@v2
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
         
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.2
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
         
-      - name: Restore NuGet Packages
-        run: nuget restore ./src/EncompassRest.sln /p:Configuration-Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+    - name: Restore NuGet Packages
+      run: nuget restore ./src/EncompassRest.sln /p:Configuration-Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: published_webapp
-          path: bin\Release\Publish
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: published_webapp
+        path: bin\Release\Publish
