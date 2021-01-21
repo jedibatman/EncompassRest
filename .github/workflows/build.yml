@@ -14,10 +14,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
         
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.2
+      uses: nuget/setup-nuget@v1.0.5
         
     - name: Restore NuGet Packages
-      run: nuget restore ./src/EncompassRest.sln /p:Configuration-Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+      run: nuget restore ./src/EncompassRest.sln
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v1.0.0
