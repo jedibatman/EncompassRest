@@ -14,7 +14,6 @@ jobs:
     runs-on: windows-latest
     env:
       CONFIGURATION: Release
-      TARGET_FRAMEWORK: netstandard2.1
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
@@ -30,7 +29,7 @@ jobs:
       run: dotnet restore src/EncompassRest/EncompassRest.csproj
 
     - name: Publish Solution
-      run: dotnet publish -c $env:CONFIGURATION -f $env:TARGET_FRAMEWORK src/EncompassRest/EncompassRest.csproj
+      run: dotnet publish -c $env:CONFIGURATION src/EncompassRest/EncompassRest.csproj
 
     - name: Pack Solution
-      run: dotnet pack -c $env:CONFIGURATION -p:TargetFramework=$env:TARGET_FRAMEWORK src/EncompassRest/EncompassRest.csproj
+      run: dotnet pack -c $env:CONFIGURATION src/EncompassRest/EncompassRest.csproj
