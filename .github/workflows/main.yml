@@ -1,0 +1,20 @@
+name: EncompassREST Build
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-dotnet@v1
+
+    - name: Restore NuGet Packages
+      run: dotnet restore src/EncompassRest.sln
+
+    - name: Build Solution
+      run: dotnet build src/EncompassRest.sln
