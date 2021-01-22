@@ -11,11 +11,15 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Add MSBuild to PATH
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
 
+    - uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+
     - name: Restore NuGet Packages
-      run: dotnet restore src/EncompassRest.sln
+      run: nuget restore src/EncompassRest.sln
 
     - name: Build Solution
       run: dotnet build src/EncompassRest.sln
