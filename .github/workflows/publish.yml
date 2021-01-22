@@ -10,7 +10,7 @@ on:
       - completed
 
 jobs:
-  build:
+  publish:
     runs-on: windows-latest
     env:
       CONFIGURATION: Release
@@ -24,5 +24,5 @@ jobs:
     - name: Restore NuGet Packages
       run: dotnet restore src/EncompassRest.sln
 
-    - name: Build Solution
+    - name: Publish Solution
       run: dotnet publish -c $env:CONFIGURATION $src/EncompassRest.sln
