@@ -25,4 +25,4 @@ jobs:
       run: dotnet restore src/EncompassRest.sln
 
     - name: Publish Solution
-      run: dotnet publish -c $env:CONFIGURATION $src/EncompassRest.sln
+      run: dotnet publish -c $env:CONFIGURATION src/EncompassRest.sln
