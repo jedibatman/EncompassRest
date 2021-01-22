@@ -27,10 +27,10 @@ jobs:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Restore NuGet Packages
-      run: dotnet restore src/EncompassRest.sln
+      run: dotnet restore src/EncompassRest/EncompassRest.csproj
 
     - name: Publish Solution
-      run: dotnet publish -c $env:CONFIGURATION -f $env:TARGET_FRAMEWORK src/EncompassRest.sln
+      run: dotnet publish -c $env:CONFIGURATION -f $env:TARGET_FRAMEWORK src/EncompassRest/EncompassRest.csproj
 
     - name: Pack Solution
-      run: dotnet pack -c $env:CONFIGURATION -p:TargetFramework=$env:TARGET_FRAMEWORK src/EncompassRest.sln
+      run: dotnet pack -c $env:CONFIGURATION -p:TargetFramework=$env:TARGET_FRAMEWORK src/EncompassRest/EncompassRest.csproj
