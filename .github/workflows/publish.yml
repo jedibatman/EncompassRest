@@ -1,9 +1,14 @@
-name: Build
+name: Publish
+
 on:
-  push:
+  workflow_run:
+    workflows: ["Build"]
     branches:
       - master
       - feature/*
+    types:
+      - completed
+
 jobs:
   build:
     runs-on: windows-latest
@@ -20,4 +25,4 @@ jobs:
       run: dotnet restore src/EncompassRest.sln
 
     - name: Build Solution
-      run: dotnet build -c $env:CONFIGURATION src/EncompassRest.sln
+      run: dotnet publish -c $env:CONFIGURATION $src/EncompassRest.sln
