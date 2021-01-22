@@ -30,7 +30,7 @@ jobs:
       run: dotnet restore src/EncompassRest.sln
 
     - name: Publish Solution
-      run: dotnet publish -c $env:CONFIGURATION -t $env:TARGET_FRAMEWORK src/EncompassRest.sln
+      run: dotnet publish -c $env:CONFIGURATION -f $env:TARGET_FRAMEWORK src/EncompassRest.sln
 
     - name: Pack Solution
       run: dotnet pack -c $env:CONFIGURATION -p:TargetFramework=$env:TARGET_FRAMEWORK src/EncompassRest.sln
