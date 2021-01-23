@@ -31,6 +31,10 @@ jobs:
     - name: Build Solution
       run: dotnet build -c $env:CONFIGURATION src/EncompassRest/EncompassRest.csproj
 
+    - run: ls src/EncompassRest/bin/Release/*.nupkg
+
+    - run: Get-ChildItem ./src/EncompassRest/bin/Release/*.nupkg
+
     - name: Push NuGet Package
       run: dotnet nuget push --no-symbols --skip-duplicates "src/EncompassRest/bin/Release/*.nupkg"
       env:
