@@ -10,7 +10,7 @@ on:
       - completed
 
 jobs:
-  build:
+  publish:
     runs-on: windows-latest
     env:
       CONFIGURATION: Release
@@ -20,9 +20,18 @@ jobs:
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
 
     - name: Restore NuGet Packages
-      run: dotnet restore src/EncompassRest.sln
+      run: dotnet restore src/EncompassRest/EncompassRest.csproj
 
     - name: Build Solution
-      run: dotnet publish -c $env:CONFIGURATION $src/EncompassRest.sln
+      run: dotnet build -c $env:CONFIGURATION src/EncompassRest/EncompassRest.csproj
+
+    - name: Push NuGet Package
+      run: dotnet nuget push --no-symbols --skip-duplicates src/EncompassRest/bin/Release/*.nupkg
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
