@@ -32,6 +32,6 @@ jobs:
       run: dotnet build -c $env:CONFIGURATION src/EncompassRest/EncompassRest.csproj
 
     - name: Push NuGet Package
-      run: dotnet -d nuget push "src/EncompassRest/bin/Release/*.nupkg"
+      run: dotnet -d nuget push "src\EncompassRest\bin\Release\*.nupkg"
       env:
         NUGET_AUTH_TOKEN: ${{ github.token }}
